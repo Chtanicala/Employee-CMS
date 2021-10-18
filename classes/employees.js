@@ -14,6 +14,16 @@ const db = mysql.createConnection(
   )
 
 
+  let viewEmployees = () => {
+    db.query(`SELECT * FROM Employees`,  (err, result) => {
+      if (err) {
+        console.log(err);
+      }
+      console.log(result);
+      console.log(fields);
+    });
+  }
+
 let addEmployees = () => {
     inquirer
         .prompt([

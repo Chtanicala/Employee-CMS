@@ -13,6 +13,18 @@ const db = mysql.createConnection(
     console.log(`Connected to the employees_db database.`)
   )
 
+let viewDepartments = () => {
+  db.query(`SELECT * FROM departments`,  (err, result) => {
+    if (err) {
+      console.log(err);
+    }
+    console.log(result);
+    console.log(fields);
+  });
+}
+
+
+
 let addDepartment = () => {
     inquirer
         .prompt(

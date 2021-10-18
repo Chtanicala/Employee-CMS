@@ -13,6 +13,16 @@ const db = mysql.createConnection(
     console.log(`Connected to the employees_db database.`)
   )
 
+let viewRoles = () => {
+    db.query(`SELECT * FROM roles`,  (err, result) => {
+      if (err) {
+        console.log(err);
+      }
+      console.log(result);
+      console.log(fields);
+    });
+  }
+
 let addRoles = () => {
     inquirer
         .prompt([
