@@ -189,7 +189,145 @@ let addEmployees = () => {
         })
 }
 
-// Update Function
+// Update Functions
+let updateDepartment = () => {
+    inquirer
+        .prompt(
+            [
+                {
+                    type: 'input',
+                    message: "Enter the id of the department you want to update",
+                    name: "updateDepartmentId",
+                },
+                {
+                    type: 'input',
+                    message: "Enter the department's new name",
+                    name: "updateDepartmentName", 
+                }
+            ]
+        )
+        then((answers) => {
+            console.log(answers);
+
+            db.query(`UPDATE departments SET (first_name) = (${updateDepartmentName.answers}) WHERE department_id = (${updateDepartmentId.answers});`,  (err, result) => {
+                if (err) {
+                  console.log(err);
+                }
+                console.log(result);
+              });
+
+            db.query(`SELECT * FROM departments`,  (err, result) => {
+                if (err) {
+                  console.log(err);
+                }
+                console.log(result);
+              });
+        })
+}
+
+let updateRoles = () => {
+    inquirer
+        .prompt(
+            [
+                {
+                    type: 'input',
+                    message: "Enter the id of the role you want to update",
+                    name: "updateRoleId",
+                },
+                {
+                    type: 'input',
+                    message: "Enter the role's new name",
+                    name: "updateRoleName", 
+                },
+                {
+                    type: 'input',
+                    message: "Enter the role's new salary",
+                    name: "updateRoleSalary", 
+                }
+            ]
+        )
+        then((answers) => {
+            console.log(answers);
+
+            db.query(`UPDATE roles SET (title) = (${updateRoleName.answers}) WHERE role_id = (${updateRoleId.answers});`,  (err, result) => {
+                if (err) {
+                  console.log(err);
+                }
+                console.log(result);
+              });
+
+            db.query(`UPDATE roles SET (salary) = (${updateRoleSalary.answers}) WHERE role_id = (${updateRoleId.answers});`,  (err, result) => {
+                if (err) {
+                  console.log(err);
+                }
+                console.log(result);
+              });
+
+            db.query(`SELECT * FROM roles`,  (err, result) => {
+                if (err) {
+                  console.log(err);
+                }
+                console.log(result);
+              });
+        })
+}
+
+let updateEmployee = () => {
+    inquirer
+        .prompt(
+            [
+                {
+                    type: 'input',
+                    message: "Enter the id of the employee you want to update",
+                    name: "updateEmployeeId",
+                },
+                {
+                    type: 'input',
+                    message: "Enter the employee's new first name",
+                    name: "updateEmployeeFirst", 
+                },
+                {
+                    type: 'input',
+                    message: "Enter the employee's new last name",
+                    name: "updateEmployeeLast", 
+                },
+                {
+                    type: 'input',
+                    message: "Enter the employee's new role",
+                    name: "updateEmployeeRole", 
+                },
+                {
+                    type: 'input',
+                    message: "Enter the employee's new manager",
+                    name: "updateEmployeeManager", 
+                },
+            ]
+        )
+        then((answers) => {
+            console.log(answers);
+
+            db.query(`UPDATE employees SET (first_name) = (${updateEmployeeFirst}) WHERE employee_id = (${updateEmployeeId.answers});`,  (err, result) => {
+                if (err) {
+                  console.log(err);
+                }
+                console.log(result);
+              });
+
+            db.query(`UPDATE employees SET (last_name) = (${updateEmployeeLast}) WHERE employee_id = (${updateEmployeeId.answers});`,  (err, result) => {
+                if (err) {
+                  console.log(err);
+                }
+                console.log(result);
+              });
+
+            db.query(`SELECT * FROM roles`,  (err, result) => {
+                if (err) {
+                  console.log(err);
+                }
+                console.log(result);
+              });
+        })
+}
 
 let navMenu = () => {
 
@@ -206,11 +344,17 @@ inquirer
             } else if (answers.navOptions === "Add Department") {
                 addDepartment()
                 
+            } else if (answers.navOptions === "Add Department") {
+                updateDepartment()
+                
             } else if (answers.navOptions === "View ALL Roles") {
                 viewRoles()
                 
             } else if (answers.navOptions === "Add Roles") {
                 addRoles()
+                
+            } else if (answers.navOptions === "Add Roles") {
+                updateRoles()
                 
             } else if (answers.navOptions === "View ALL Employees") {
                 viewEmployees()
