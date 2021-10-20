@@ -1,31 +1,35 @@
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
 
+
+
 const db = mysql.createConnection(
     {
       host: 'localhost',
       // MySQL username,
       user: 'root',
       // TODO: Add MySQL password
-      password: '',
+      password: '123root',
       database: 'employees_db'
     },
     console.log(`Connected to the employees_db database.`)
   )
 
-let viewDepartments = () => {
-  db.query(`SELECT * FROM departments`,  (err, result) => {
-    if (err) {
-      console.log(err);
-    }
-    console.log(result);
-    console.log(fields);
-  });
-}
+
+class Departments {
 
 
+  viewDepartments() {
+    db.query(`SELECT * FROM departments`,  (err, result) => {
+      if (err) {
+        console.log(err);
+      }
+      console.log(result);
+      console.log(fields);
+    });
+  }
 
-let addDepartment = () => {
+  addDepartment() {
     inquirer
         .prompt(
             {
@@ -37,23 +41,23 @@ let addDepartment = () => {
         .then((answers) => {
             console.log(answers);
 
-            db.query(`INSERT INTO departments (name) VALUES (${addDepartment.answers});`,  (err, result) => {
-                if (err) {
-                  console.log(err);
-                }
-                console.log(result);
-              });
+            // db.query(`INSERT INTO departments (name) VALUES (${addDepartment.answers});`,  (err, result) => {
+            //     if (err) {
+            //       console.log(err);
+            //     }
+            //     console.log(result);
+            //   });
 
-            db.query(`SELECT * FROM departments`,  (err, result) => {
-                if (err) {
-                  console.log(err);
-                }
-                console.log(result);
-              });
+            // db.query(`SELECT * FROM departments`,  (err, result) => {
+            //     if (err) {
+            //       console.log(err);
+            //     }
+            //     console.log(result);
+            //   });
         })
-}
-
-let updateDepartment = () => {
+  }
+  
+  updateDepartment() {
     inquirer
         .prompt(
             [
@@ -69,4 +73,5 @@ let updateDepartment = () => {
                 }
             ]
         )
+  }
 }
