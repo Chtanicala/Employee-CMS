@@ -344,7 +344,7 @@ inquirer
             } else if (answers.navOptions === "Add Department") {
                 addDepartment()
                 
-            } else if (answers.navOptions === "Add Department") {
+            } else if (answers.navOptions === "Update Department") {
                 updateDepartment()
                 
             } else if (answers.navOptions === "View ALL Roles") {
@@ -353,7 +353,7 @@ inquirer
             } else if (answers.navOptions === "Add Roles") {
                 addRoles()
                 
-            } else if (answers.navOptions === "Add Roles") {
+            } else if (answers.navOptions === "Update Roles") {
                 updateRoles()
                 
             } else if (answers.navOptions === "View ALL Employees") {
@@ -361,6 +361,9 @@ inquirer
                 
             } else if (answers.navOptions === "Add Employees") {
                 addEmployees()
+                
+            } else if (answers.navOptions === "Update Employees") {
+                updateEmployee()
                 
             }
         })
