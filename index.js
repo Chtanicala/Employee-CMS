@@ -62,17 +62,17 @@ let createArray = () => {
       console.log(err)
     } else if (results.length > 0) {
       for (let index = 0; index < results.length; index++) {
-        roleArray.push(results[index].name)
+        roleArray.push(results[index].title)
         
       }
     }
   };
-  db.query(`SELECT title FROM roles`), (err, results) => {
+  db.query(`SELECT first_name, last_name FROM employees`), (err, results) => {
     if (err) {
       console.log(err)
     } else if (results.length > 0) {
       for (let index = 0; index < results.length; index++) {
-        roleArray.push(results[index].name)
+        employeeArray.push(results[index].first_name + " " + results[i].last_name)
         
       }
     }
@@ -87,6 +87,7 @@ let viewDepartments = () => {
         console.log(err);
       }
       console.log(result);
+      navMenu()
     });
   }
 
@@ -96,6 +97,7 @@ let viewRoles = () => {
         console.log(err);
       }
       console.log(result);
+      navMenu()
     });
   }
 
@@ -105,10 +107,11 @@ let viewEmployees = () => {
         console.log(err);
       }
       console.log(result);
+      navMenu()
     });
   }
 
-// Add Functions
+// Add Questions
 let addDepartmentQuestions = [
             {
                 type: 'input',
@@ -162,7 +165,7 @@ let addEmployeeQuestions = [
             }
         ]
 
-// Update Functions
+// Update Questions
 let updateDepartmentQuestions =
             [
                 {
@@ -230,11 +233,27 @@ let updateEmployeeQuestions =
                 },
             ]
 
+// Add Functions
+let addDepartment = () => {
+  inquirer
+    .prompt(
+      addDepartmentQuestions
+    )
+    .then((answers) => {
+      db.query(`INSERT INTO departments (name) VALUES ("${answers.addDepartmentName}")`, (err, results) => {
+        if (err) {
+          console.log(err)
+        } else {
+          departmentArray.push(answers.addDepartmentName);
+          console.log("Successefully added to the database!");
+          navMenu()
+        }
+      })
+    })
+}
 
 let navMenu = () => {
-
-
-inquirer
+    inquirer
         .prompt(
             navOptions
         )
@@ -267,8 +286,11 @@ inquirer
             } else if (answers.navOptions === "Update Employees") {
                 updateEmployee()
                 
+            } else if (answers.navOptions === "Quit") {
+              process.exit()
             }
         })
 }
-createConnection();
-navMenu();
+// createConnection();
+navMenu()
+
