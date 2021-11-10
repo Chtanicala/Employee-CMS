@@ -234,7 +234,8 @@ let updateEmployeeQuestions =
             ]
 
 // Add Functions
-let addDepartment = () => {
+
+let addDepartments = () => {
   inquirer
     .prompt(
       addDepartmentQuestions
@@ -250,9 +251,28 @@ let addDepartment = () => {
         }
       })
     })
+};
+
+let addRoles = () => {
+  inquirer
+    .prompt(
+      addRoleQuestions
+    )
+    .then((answers) => {
+      db.query(`INSERT INTO roles (title, salary, department_id) VALUES ("${answers.addRolesTitle}"), (${answers.addRolesSalary}), SELECT department_id FROM departments WHERE name = "${answers.addRolesDepartment}")`, (err, results) => {
+        if (err) {
+          console.log(err)
+        } else {
+          roleArray.push(answers.addRoleName);
+          console.log("Successefully added to the database!");
+          navMenu()
+        }
+      })
+    })
 }
 
 let navMenu = () => {
+    console.log(departmentArray)
     inquirer
         .prompt(
             navOptions
@@ -263,7 +283,7 @@ let navMenu = () => {
                 viewDepartments()
 
             } else if (answers.navOptions === "Add Department") {
-                addDepartment()
+                addDepartments()
                 
             } else if (answers.navOptions === "Update Department") {
                 updateDepartment()
@@ -271,7 +291,7 @@ let navMenu = () => {
             } else if (answers.navOptions === "View ALL Roles") {
                 viewRoles()
                 
-            } else if (answers.navOptions === "Add Roles") {
+            } else if (answers.navOptions === "Add Role") {
                 addRoles()
                 
             } else if (answers.navOptions === "Update Roles") {
