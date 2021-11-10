@@ -1,3 +1,4 @@
+const { restoreDefaultPrompts } = require('inquirer');
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
 
@@ -20,6 +21,20 @@ const db = mysql.createConnection(
     console.log(`Connected to the employees_db database.`)
   )
 
+  function createConnection(){
+    db.connect(function(err){
+        if (err) throw err;
+        console.log('Connected to MySQL.')
+        createArr();
+        init();
+    })
+}
+
+let departmentArray =[];
+let roleArray =[];
+let managerArray =[];
+let employeeArray =[];
+
 const navOptions = [
     {
         type: 'list',
@@ -30,6 +45,40 @@ const navOptions = [
                     "Update Department", "Update Role", "Update Employee", "Quit"]
     }
 ]
+
+let createArray = () => {
+  db.query(`SELECT name FROM department`), (err, results) => {
+    if (err) {
+      console.log(err)
+    } else if (results.length > 0) {
+      for (let index = 0; index < results.length; index++) {
+        departmentArray.push(results[index].name)
+        
+      }
+    }
+  };
+  db.query(`SELECT title FROM roles`), (err, results) => {
+    if (err) {
+      console.log(err)
+    } else if (results.length > 0) {
+      for (let index = 0; index < results.length; index++) {
+        roleArray.push(results[index].name)
+        
+      }
+    }
+  };
+  db.query(`SELECT title FROM roles`), (err, results) => {
+    if (err) {
+      console.log(err)
+    } else if (results.length > 0) {
+      for (let index = 0; index < results.length; index++) {
+        roleArray.push(results[index].name)
+        
+      }
+    }
+  };
+}
+
 
 // View All Functions
 let viewDepartments = () => {
@@ -60,38 +109,16 @@ let viewEmployees = () => {
   }
 
 // Add Functions
-let addDepartment = () => {
-    inquirer
-        .prompt(
+let addDepartmentQuestions = [
             {
                 type: 'input',
                 message: "What is the name of the department?",
                 name: "addDepartmentName",
             }
-        )
-        .then((answers) => {
-            console.log(answers);
+]
 
-            db.query(`INSERT INTO departments (name) VALUES (${addDepartment.answers})`,  (err, result) => {
-                if (err) {
-                  console.log(err);
-                }
-                console.log(result);
-              });
 
-            db.query(`SELECT * FROM departments`,  (err, result) => {
-                if (err) {
-                  console.log(err);
-                }
-                console.log(result);
-              });
-    
-        })
-  }
-
-let addRoles = () => {
-    inquirer
-        .prompt([
+let addRoleQuestions = [
             {
                 type: 'input',
                 message: "Enter role title",
@@ -103,42 +130,14 @@ let addRoles = () => {
                 name: "addRolesSalary",
             },
             {
-                type: 'input',
+                type: 'list',
                 message: "Enter role department",
                 name: "addRolesDepartment",
+                choices: departmentArray,
             }
         ]
-            
-        )
-        .then((answers) => {
-            console.log(answers);
 
-            db.query(`INSERT INTO roles (title) VALUES (${addRolesTitle.answers});`,  (err, result) => {
-                if (err) {
-                  console.log(err);
-                }
-                console.log(result);
-              });
-            
-            db.query(`INSERT INTO roles (salary) VALUES (${addRolesSalary.answers});`,  (err, result) => {
-                if (err) {
-                  console.log(err);
-                }
-                console.log(result);
-              });
-
-            db.query(`SELECT * FROM roles`,  (err, result) => {
-                if (err) {
-                  console.log(err);
-                }
-                console.log(result);
-              });
-        })
-}
-
-let addEmployees = () => {
-    inquirer
-        .prompt([
+let addEmployeeQuestions = [
             {
                 type: 'input',
                 message: "Enter employee's first name",
@@ -156,48 +155,21 @@ let addEmployees = () => {
             },
 
             {
-                type: 'input',
-                message: "Enter manger",
+                type: 'list',
+                message: "Select manager",
                 name: "addEmployeeManager",
+                choices: managerArray,
             }
         ]
-            
-        )
-        .then((answers) => {
-            console.log(answers);
-
-            db.query(`INSERT INTO employees (first_name) VALUES (${addEmployeeFirst.answers});`,  (err, result) => {
-                if (err) {
-                  console.log(err);
-                }
-                console.log(result);
-              });
-            
-            db.query(`INSERT INTO employees (last_name) VALUES (${addEmployeeLast.answers});`,  (err, result) => {
-                if (err) {
-                  console.log(err);
-                }
-                console.log(result);
-              });
-
-            db.query(`SELECT * FROM employees`,  (err, result) => {
-                if (err) {
-                  console.log(err);
-                }
-                console.log(result);
-              });
-        })
-}
 
 // Update Functions
-let updateDepartment = () => {
-    inquirer
-        .prompt(
+let updateDepartmentQuestions =
             [
                 {
-                    type: 'input',
-                    message: "Enter the id of the department you want to update",
-                    name: "updateDepartmentId",
+                    type: 'list',
+                    message: "Select the department to update",
+                    name: "updateDepartmentList",
+                    choices: departmentArray
                 },
                 {
                     type: 'input',
@@ -205,34 +177,14 @@ let updateDepartment = () => {
                     name: "updateDepartmentName", 
                 }
             ]
-        )
-        then((answers) => {
-            console.log(answers);
 
-            db.query(`UPDATE departments SET (first_name) = (${updateDepartmentName.answers}) WHERE department_id = (${updateDepartmentId.answers});`,  (err, result) => {
-                if (err) {
-                  console.log(err);
-                }
-                console.log(result);
-              });
-
-            db.query(`SELECT * FROM departments`,  (err, result) => {
-                if (err) {
-                  console.log(err);
-                }
-                console.log(result);
-              });
-        })
-}
-
-let updateRoles = () => {
-    inquirer
-        .prompt(
+let updateRolesQuestions = 
             [
                 {
-                    type: 'input',
-                    message: "Enter the id of the role you want to update",
-                    name: "updateRoleId",
+                    type: 'list',
+                    message: "Select the role to update",
+                    name: "updateRoleList",
+                    choices: roleArray
                 },
                 {
                     type: 'input',
@@ -245,41 +197,14 @@ let updateRoles = () => {
                     name: "updateRoleSalary", 
                 }
             ]
-        )
-        then((answers) => {
-            console.log(answers);
 
-            db.query(`UPDATE roles SET (title) = (${updateRoleName.answers}) WHERE role_id = (${updateRoleId.answers});`,  (err, result) => {
-                if (err) {
-                  console.log(err);
-                }
-                console.log(result);
-              });
-
-            db.query(`UPDATE roles SET (salary) = (${updateRoleSalary.answers}) WHERE role_id = (${updateRoleId.answers});`,  (err, result) => {
-                if (err) {
-                  console.log(err);
-                }
-                console.log(result);
-              });
-
-            db.query(`SELECT * FROM roles`,  (err, result) => {
-                if (err) {
-                  console.log(err);
-                }
-                console.log(result);
-              });
-        })
-}
-
-let updateEmployee = () => {
-    inquirer
-        .prompt(
+let updateEmployeeQuestions =
             [
                 {
-                    type: 'input',
+                    type: 'list',
                     message: "Enter the id of the employee you want to update",
-                    name: "updateEmployeeId",
+                    name: "updateEmployeeList",
+                    choices: employeeArray
                 },
                 {
                     type: 'input',
@@ -292,42 +217,19 @@ let updateEmployee = () => {
                     name: "updateEmployeeLast", 
                 },
                 {
-                    type: 'input',
+                    type: 'list',
                     message: "Enter the employee's new role",
-                    name: "updateEmployeeRole", 
+                    name: "updateEmployeeRole",
+                    choices: roleArray 
                 },
                 {
                     type: 'input',
                     message: "Enter the employee's new manager",
-                    name: "updateEmployeeManager", 
+                    name: "updateEmployeeManager",
+                    choices: managerArray 
                 },
             ]
-        )
-        then((answers) => {
-            console.log(answers);
 
-            db.query(`UPDATE employees SET (first_name) = (${updateEmployeeFirst}) WHERE employee_id = (${updateEmployeeId.answers});`,  (err, result) => {
-                if (err) {
-                  console.log(err);
-                }
-                console.log(result);
-              });
-
-            db.query(`UPDATE employees SET (last_name) = (${updateEmployeeLast}) WHERE employee_id = (${updateEmployeeId.answers});`,  (err, result) => {
-                if (err) {
-                  console.log(err);
-                }
-                console.log(result);
-              });
-
-            db.query(`SELECT * FROM roles`,  (err, result) => {
-                if (err) {
-                  console.log(err);
-                }
-                console.log(result);
-              });
-        })
-}
 
 let navMenu = () => {
 
@@ -368,5 +270,5 @@ inquirer
             }
         })
 }
-
-navMenu()
+createConnection();
+navMenu();
