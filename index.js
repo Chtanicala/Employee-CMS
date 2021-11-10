@@ -41,8 +41,8 @@ const navOptions = [
         message: "What would you like to do?",
         name: "navOptions",
         choices: ["View ALL Departments", "View ALL Roles", "View ALL Employees",
-                    "Add Department", "Add Role", "Add Employee",
-                    "Update Department", "Update Role", "Update Employee", "Quit"]
+                    "Add Departments", "Add Roles", "Add Employees",
+                    "Update Departments", "Update Roles", "Update Employees", "Quit"]
     }
 ]
 
@@ -86,7 +86,7 @@ let viewDepartments = () => {
       if (err) {
         console.log(err);
       }
-      console.log(result);
+      console.table(result);
       navMenu()
     });
   }
@@ -96,7 +96,7 @@ let viewRoles = () => {
       if (err) {
         console.log(err);
       }
-      console.log(result);
+      console.table(result);
       navMenu()
     });
   }
@@ -106,7 +106,7 @@ let viewEmployees = () => {
       if (err) {
         console.log(err);
       }
-      console.log(result);
+      console.table(result);
       navMenu()
     });
   }
@@ -144,23 +144,24 @@ let addEmployeeQuestions = [
             {
                 type: 'input',
                 message: "Enter employee's first name",
-                name: "addEmployeeFirst",
+                name: "addEmployeesFirst",
             },
             {
                 type: 'input',
                 message: "Enter employee's last name",
-                name: "addEmployeeLast",
+                name: "addEmployeesLast",
             },
             {
-                type: 'input',
+                type: 'list',
                 message: "Enter employee role",
-                name: "addEmployeeRole",
+                name: "addEmployeesRole",
+                choices: roleArray
             },
 
             {
                 type: 'list',
                 message: "Select manager",
-                name: "addEmployeeManager",
+                name: "addEmployeesManager",
                 choices: managerArray,
             }
         ]
@@ -271,6 +272,24 @@ let addRoles = () => {
     })
 }
 
+let addEmployees = () => {
+  inquirer
+    .prompt(
+      addEmployeeQuestions
+    )
+    .then((answers) => {
+      db.query(`INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES ("${answers.addEmployeesFirst}"), (${answers.addEmployeesLast}), SELECT role_id FROM roles WHERE title = "${answers.addEmployeesRole}"), SELECT manager_id FROM roles WHERE name = "${answers.addEmployeesManager}")`, (err, results) => {
+        if (err) {
+          console.log(err)
+        } else {
+          employeeArray.push(answers.addEmployeesFirst + " " + answers.addEmployeesLast);
+          console.log("Successefully added to the database!");
+          navMenu()
+        }
+      })
+    })
+}
+
 let navMenu = () => {
     console.log(departmentArray)
     inquirer
@@ -282,16 +301,16 @@ let navMenu = () => {
             if (answers.navOptions === "View ALL Departments" ) {
                 viewDepartments()
 
-            } else if (answers.navOptions === "Add Department") {
+            } else if (answers.navOptions === "Add Departments") {
                 addDepartments()
                 
-            } else if (answers.navOptions === "Update Department") {
-                updateDepartment()
+            } else if (answers.navOptions === "Update Departments") {
+                updateDepartments()
                 
             } else if (answers.navOptions === "View ALL Roles") {
                 viewRoles()
                 
-            } else if (answers.navOptions === "Add Role") {
+            } else if (answers.navOptions === "Add Roles") {
                 addRoles()
                 
             } else if (answers.navOptions === "Update Roles") {
@@ -304,7 +323,7 @@ let navMenu = () => {
                 addEmployees()
                 
             } else if (answers.navOptions === "Update Employees") {
-                updateEmployee()
+                updateEmployees()
                 
             } else if (answers.navOptions === "Quit") {
               process.exit()
