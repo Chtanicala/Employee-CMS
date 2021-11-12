@@ -1,4 +1,4 @@
-const { restoreDefaultPrompts } = require('inquirer');
+
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
 
@@ -21,19 +21,12 @@ const db = mysql.createConnection(
     console.log(`Connected to the employees_db database.`)
   )
 
-  function createConnection(){
     db.connect(function(err){
-        if (err) throw err;
-        console.log('Connected to MySQL.')
-        createArr();
-        init();
+        if (err) {
+          console.log(err)
+        }
+        console.log('Connected to MySQL.');
     })
-}
-
-let departmentArray =[];
-let roleArray =[];
-let managerArray =[];
-let employeeArray =[];
 
 const navOptions = [
     {
@@ -46,37 +39,17 @@ const navOptions = [
     }
 ]
 
-let createArray = () => {
-  db.query(`SELECT name FROM department`), (err, results) => {
-    if (err) {
-      console.log(err)
-    } else if (results.length > 0) {
-      for (let index = 0; index < results.length; index++) {
-        departmentArray.push(results[index].name)
-        
-      }
-    }
-  };
-  db.query(`SELECT title FROM roles`), (err, results) => {
-    if (err) {
-      console.log(err)
-    } else if (results.length > 0) {
-      for (let index = 0; index < results.length; index++) {
-        roleArray.push(results[index].title)
-        
-      }
-    }
-  };
-  db.query(`SELECT first_name, last_name FROM employees`), (err, results) => {
-    if (err) {
-      console.log(err)
-    } else if (results.length > 0) {
-      for (let index = 0; index < results.length; index++) {
-        employeeArray.push(results[index].first_name + " " + results[i].last_name)
-        
-      }
-    }
-  };
+let findAllDepartments = () => {
+  return db.promise().query(`SELECT name, department_id FROM departments`) 
+  
+}
+
+let findAllRoles = () => {
+  return db.promise().query(`SELECT * FROM roles`) 
+}
+
+let findAllEmployees = () => {
+  return db.promise().query(`SELECT * FROM employees`) 
 }
 
 
@@ -119,26 +92,6 @@ let addDepartmentQuestions = [
                 name: "addDepartmentName",
             }
 ]
-
-
-let addRoleQuestions = [
-            {
-                type: 'input',
-                message: "Enter role title",
-                name: "addRolesTitle",
-            },
-            {
-                type: 'input',
-                message: "Enter role salary",
-                name: "addRolesSalary",
-            },
-            {
-                type: 'list',
-                message: "Enter role department",
-                name: "addRolesDepartment",
-                choices: departmentArray,
-            }
-        ]
 
 let addEmployeeQuestions = [
             {
@@ -255,12 +208,37 @@ let addDepartments = () => {
 };
 
 let addRoles = () => {
+  findAllDepartments().then(([rows]) => {
+    let departments = rows;
+      const departmentChoices = departments.map(({ department_id, name }) => ({
+        name: name,
+        value: department_id
+      }));
+
   inquirer
     .prompt(
-      addRoleQuestions
+      [
+        {
+            type: 'input',
+            message: "Enter role title",
+            name: "title",
+        },
+        {
+            type: 'input',
+            message: "Enter role salary",
+            name: "salary",
+        },
+        {
+            type: 'list',
+            message: "Enter role department",
+            name: "department_id",
+            choices: departmentChoices,
+        }
+    ]
     )
     .then((answers) => {
-      db.query(`INSERT INTO roles (title, salary, department_id) VALUES ("${answers.addRolesTitle}"), (${answers.addRolesSalary}), SELECT department_id FROM departments WHERE name = "${answers.addRolesDepartment}")`, (err, results) => {
+      console.log(answers)
+      db.query(`INSERT INTO roles SET ?`, answers, (err, results) => {
         if (err) {
           console.log(err)
         } else {
@@ -270,6 +248,7 @@ let addRoles = () => {
         }
       })
     })
+  })
 }
 
 let addEmployees = () => {
@@ -330,6 +309,8 @@ let navMenu = () => {
             }
         })
 }
+
 // createConnection();
-navMenu()
+
+navMenu();
 
