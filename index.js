@@ -93,32 +93,6 @@ let addDepartmentQuestions = [
             }
 ]
 
-let addEmployeeQuestions = [
-            {
-                type: 'input',
-                message: "Enter employee's first name",
-                name: "addEmployeesFirst",
-            },
-            {
-                type: 'input',
-                message: "Enter employee's last name",
-                name: "addEmployeesLast",
-            },
-            {
-                type: 'list',
-                message: "Enter employee role",
-                name: "addEmployeesRole",
-                choices: roleArray
-            },
-
-            {
-                type: 'list',
-                message: "Select manager",
-                name: "addEmployeesManager",
-                choices: managerArray,
-            }
-        ]
-
 // Update Questions
 let updateDepartmentQuestions =
             [
@@ -126,7 +100,7 @@ let updateDepartmentQuestions =
                     type: 'list',
                     message: "Select the department to update",
                     name: "updateDepartmentList",
-                    choices: departmentArray
+                    // choices: departmentArray
                 },
                 {
                     type: 'input',
@@ -141,7 +115,7 @@ let updateRolesQuestions =
                     type: 'list',
                     message: "Select the role to update",
                     name: "updateRoleList",
-                    choices: roleArray
+                    // choices: roleArray
                 },
                 {
                     type: 'input',
@@ -161,7 +135,7 @@ let updateEmployeeQuestions =
                     type: 'list',
                     message: "Enter the id of the employee you want to update",
                     name: "updateEmployeeList",
-                    choices: employeeArray
+                    // choices: employeeArray
                 },
                 {
                     type: 'input',
@@ -177,13 +151,13 @@ let updateEmployeeQuestions =
                     type: 'list',
                     message: "Enter the employee's new role",
                     name: "updateEmployeeRole",
-                    choices: roleArray 
+                    // choices: roleArray 
                 },
                 {
                     type: 'input',
                     message: "Enter the employee's new manager",
                     name: "updateEmployeeManager",
-                    choices: managerArray 
+                    // choices: managerArray 
                 },
             ]
 
@@ -199,7 +173,6 @@ let addDepartments = () => {
         if (err) {
           console.log(err)
         } else {
-          departmentArray.push(answers.addDepartmentName);
           console.log("Successefully added to the database!");
           navMenu()
         }
@@ -242,7 +215,6 @@ let addRoles = () => {
         if (err) {
           console.log(err)
         } else {
-          roleArray.push(answers.addRoleName);
           console.log("Successefully added to the database!");
           navMenu()
         }
@@ -252,25 +224,49 @@ let addRoles = () => {
 }
 
 let addEmployees = () => {
+  findAllRoles().then(([rows]) => {
+    let roles = rows;
+      const roleChoices = roles.map(({ role_id, title }) => ({
+        name: title,
+        value: role_id
+      }));
+
   inquirer
     .prompt(
-      addEmployeeQuestions
+      [
+        {
+            type: 'input',
+            message: "Enter employee's first name",
+            name: "first_name",
+        },
+        {
+            type: 'input',
+            message: "Enter employee's last name",
+            name: "last_name",
+        },
+        {
+            type: 'list',
+            message: "Enter employee role",
+            name: "role_id",
+            choices: roleChoices
+        },
+    ]
     )
     .then((answers) => {
-      db.query(`INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES ("${answers.addEmployeesFirst}"), (${answers.addEmployeesLast}), SELECT role_id FROM roles WHERE title = "${answers.addEmployeesRole}"), SELECT manager_id FROM roles WHERE name = "${answers.addEmployeesManager}")`, (err, results) => {
+      console.log(answers)
+      db.query(`INSERT INTO employees SET ?`, answers, (err, results) => {
         if (err) {
           console.log(err)
         } else {
-          employeeArray.push(answers.addEmployeesFirst + " " + answers.addEmployeesLast);
           console.log("Successefully added to the database!");
           navMenu()
         }
       })
     })
+  })
 }
 
 let navMenu = () => {
-    console.log(departmentArray)
     inquirer
         .prompt(
             navOptions
