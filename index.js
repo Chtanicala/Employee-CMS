@@ -94,20 +94,6 @@ let addDepartmentQuestions = [
 ]
 
 // Update Questions
-let updateDepartmentQuestions =
-            [
-                {
-                    type: 'list',
-                    message: "Select the department to update",
-                    name: "updateDepartmentList",
-                    // choices: departmentArray
-                },
-                {
-                    type: 'input',
-                    message: "Enter the department's new name",
-                    name: "updateDepartmentName", 
-                }
-            ]
 
 let updateRolesQuestions = 
             [
@@ -307,6 +293,63 @@ let updateDepartments = () => {
 }
 
 // Update Roles
+let updateRoles = () => {
+  findAllDepartments().then(([rows]) => {
+    let departments = rows;
+      const departmentChoices = departments.map(({ department_id, name }) => ({
+        name: name,
+        value: department_id
+      }));
+
+  findAllRoles().then(([rows]) => {
+    let roles = rows;
+      const roleChoices = roles.map(({ role_id, title }) => ({
+        name: title,
+        value: role_id
+      }));
+
+  inquirer
+    .prompt(
+      [
+        {
+            type: 'list',
+            message: "Select the role to update",
+            name: "role_id",
+            choices: roleChoices
+        },
+        {
+            type: 'input',
+            message: "Enter the role's new name",
+            name: "title", 
+        },
+        {
+            type: 'input',
+            message: "Enter the role's new salary",
+            name: "salary", 
+        },
+        {
+          type: 'list',
+          message: "Select the role's department",
+          name: "department_id",
+          choices: departmentChoices
+         },
+    ]
+    )
+    .then((answers) => {
+      console.log(answers)
+      db.query(`UPDATE roles SET ? WHERE role_id = ${answers.role_id}`, answers, (err, results) => {
+        if (err) {
+          console.log(err)
+        } else {
+          console.log("Successefully Updated");
+          navMenu()
+        }
+      })
+    })
+    })
+  })
+}
+
 // Update Employees
 
 
