@@ -351,7 +351,69 @@ let updateRoles = () => {
 }
 
 // Update Employees
+let updateEmployees = () => {
+  findAllRoles().then(([rows]) => {
+    let roles = rows;
+      const roleChoices = roles.map(({ role_id, title }) => ({
+        name: title,
+        value: role_id
+      }));
 
+  findAllEmployees().then(([rows]) => {
+    let employees = rows;
+      const employeeChoices = employees.map(({ employee_id, first_name, last_name }) => ({
+        name: first_name,
+        name: last_name,
+        value: employee_id
+      }));
+
+  inquirer
+    .prompt(
+      [
+        {
+            type: 'list',
+            message: "Select an employee to update",
+            name: "employee_id",
+            choices: employeeChoices
+        },
+        {
+            type: 'input',
+            message: "Enter the employee's new first name",
+            name: "first_name", 
+        },
+        {
+            type: 'input',
+            message: "Enter the employee's new last name",
+            name: "last_name", 
+        },
+        {
+            type: 'list',
+            message: "Enter the employee's new role",
+            name: "role_id",
+            choices: roleChoices 
+        },
+        // {
+        //     type: 'input',
+        //     message: "Enter the employee's new manager",
+        //     name: "updateEmployeeManager",
+        //     // choices: managerArray 
+        // },
+    ]
+    )
+    .then((answers) => {
+      console.log(answers)
+      db.query(`UPDATE employees SET ? WHERE employee_id = ${answers.employee_id}`, answers, (err, results) => {
+        if (err) {
+          console.log(err)
+        } else {
+          console.log("Successefully Updated");
+          navMenu()
+        }
+      })
+    })
+    })
+  })
+}
 
 
 let navMenu = () => {
