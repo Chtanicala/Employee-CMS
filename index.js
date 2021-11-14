@@ -266,6 +266,51 @@ let addEmployees = () => {
   })
 }
 
+// Update Functions
+// Update Departments
+let updateDepartments = () => {
+  findAllDepartments().then(([rows]) => {
+    let departments = rows;
+      const departmentChoices = departments.map(({ department_id, name }) => ({
+        name: name,
+        value: department_id
+      }));
+
+  inquirer
+    .prompt(
+      [
+        {
+            type: 'list',
+            message: "Select the department to update",
+            name: "department_id",
+            choices: departmentChoices
+        },
+        {
+            type: 'input',
+            message: "Enter the department's new name",
+            name: "name", 
+        }
+    ]
+    )
+    .then((answers) => {
+      console.log(answers)
+      db.query(`UPDATE departments SET ? WHERE department_id = ${answers.department_id}`, answers, (err, results) => {
+        if (err) {
+          console.log(err)
+        } else {
+          console.log("Successefully Updated");
+          navMenu()
+        }
+      })
+    })
+  })
+}
+
+// Update Roles
+// Update Employees
+
+
+
 let navMenu = () => {
     inquirer
         .prompt(
