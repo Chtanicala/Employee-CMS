@@ -93,60 +93,6 @@ let addDepartmentQuestions = [
             }
 ]
 
-// Update Questions
-
-let updateRolesQuestions = 
-            [
-                {
-                    type: 'list',
-                    message: "Select the role to update",
-                    name: "updateRoleList",
-                    // choices: roleArray
-                },
-                {
-                    type: 'input',
-                    message: "Enter the role's new name",
-                    name: "updateRoleName", 
-                },
-                {
-                    type: 'input',
-                    message: "Enter the role's new salary",
-                    name: "updateRoleSalary", 
-                }
-            ]
-
-let updateEmployeeQuestions =
-            [
-                {
-                    type: 'list',
-                    message: "Enter the id of the employee you want to update",
-                    name: "updateEmployeeList",
-                    // choices: employeeArray
-                },
-                {
-                    type: 'input',
-                    message: "Enter the employee's new first name",
-                    name: "updateEmployeeFirst", 
-                },
-                {
-                    type: 'input',
-                    message: "Enter the employee's new last name",
-                    name: "updateEmployeeLast", 
-                },
-                {
-                    type: 'list',
-                    message: "Enter the employee's new role",
-                    name: "updateEmployeeRole",
-                    // choices: roleArray 
-                },
-                {
-                    type: 'input',
-                    message: "Enter the employee's new manager",
-                    name: "updateEmployeeManager",
-                    // choices: managerArray 
-                },
-            ]
-
 // Add Functions
 
 let addDepartments = () => {
@@ -235,6 +181,11 @@ let addEmployees = () => {
             message: "Enter employee role",
             name: "role_id",
             choices: roleChoices
+        },
+        {
+          type: 'liinputst',
+          message: "Enter manager's full name",
+          name: "manager",
         },
     ]
     )
@@ -391,12 +342,11 @@ let updateEmployees = () => {
             name: "role_id",
             choices: roleChoices 
         },
-        // {
-        //     type: 'input',
-        //     message: "Enter the employee's new manager",
-        //     name: "updateEmployeeManager",
-        //     // choices: managerArray 
-        // },
+        {
+          type: 'input',
+          message: "Enter the employee's new manager",
+          name: "manager", 
+        },
     ]
     )
     .then((answers) => {
