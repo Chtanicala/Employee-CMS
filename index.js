@@ -2,8 +2,6 @@
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
 
-// const departments = require('./classes/Department')
-
 // What would you like to do?
 // - View Departments, Roles, Employees
 // - Add Department, Role, Employee

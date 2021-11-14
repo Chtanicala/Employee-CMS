@@ -22,7 +22,7 @@
 
 ## Links
 - https://github.com/Chtanicala/Employee-CMS (Repository)
--  (Video)
+- https://watch.screencastify.com/v/YHqw6zU8MhdumRXFrGgr (Video)
     
 ## Questions
 - Contact username, Chtanicala, on Github
